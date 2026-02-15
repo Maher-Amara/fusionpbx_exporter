@@ -14,17 +14,22 @@
 
     Average call duration per domain: The average call duration per domain (calculated over the last 30 seconds) is set in the durationMetrics map.
 
-
 Prometheus exporter for FusionPBX Multi-Tenant based metrics
 <img width="1459" alt="Screenshot 2023-07-12 at 3 42 49 pm" src="https://github.com/ngn-au/fusionpbx_exporter/assets/107200645/28feda6d-fcc6-48b0-b6fd-7625b8d48fd4">
 
-Inspired by: https://github.com/florentchauveau/freeswitch_exporter
+Inspired by: <https://github.com/florentchauveau/freeswitch_exporter>
 
 `./fusionpbx_exporter --password YourSecretPassword`
 
-You can find your password in `/etc/fusionpbx/config.php`
+You can find your password in `/etc/fusionpbx/config.php` or `/etc/fusionpbx/config.conf`
 
+**Default Configuration:**
 
+- Listen port: `9240` (configurable via `--web.listen-address`)
+- Database host: `localhost`
+- Database port: `5432`
+- Database name: `fusionpbx`
+- Database user: `fusionpbx`
 
 **Prometheus Config:**
 
@@ -35,27 +40,32 @@ You can find your password in `/etc/fusionpbx/config.php`
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
     static_configs:
-      - targets: ['fusionpbx:8080']
+      - targets: ['fusionpbx:9240']
 ```
 
-
 **Usage:**
+
 ```bash
 fusionpbx_exporter --help
 usage: fusionpbx_exporter [<flags>]
 
 
 Flags:
-  --[no-]help            Show context-sensitive help (also try --help-long and
-                         --help-man).
-  --user="fusionpbx"     PostgreSQL username
-  --password="password"  PostgreSQL password
-  --dbname="fusionpbx"   PostgreSQL database name
-  --host="localhost"     PostgreSQL host
-  --port="5432"          PostgreSQL port
+  --[no-]help                  Show context-sensitive help (also try --help-long and
+                               --help-man).
+  --user="fusionpbx"           PostgreSQL username
+  --password="password"        PostgreSQL password
+  --dbname="fusionpbx"         PostgreSQL database name
+  --host="localhost"           PostgreSQL host
+  --port="5432"                PostgreSQL port
+  --web.listen-address=":9240" Address to listen on for web interface and metrics
 
 ```
+
+**Note:** The default listen port is `9240` to avoid conflicts with FreeSWITCH (port 8021) and FusionPBX web interface (port 8080). You can change it using the `--web.listen-address` flag.
+
 **METRICS**
+
 ```
 # HELP extensions_per_domain Number of extensions per domain
 # TYPE extensions_per_domain gauge
@@ -72,6 +82,7 @@ Flags:
 # HELP avg_call_duration_per_domain Average call duration per domain
 # TYPE avg_call_duration_per_domain gauge
 ```
+
 **Grafana Dashboard**
 
-https://grafana.com/grafana/dashboards/19155-fusionpbx/
+<https://grafana.com/grafana/dashboards/19155-fusionpbx/>
